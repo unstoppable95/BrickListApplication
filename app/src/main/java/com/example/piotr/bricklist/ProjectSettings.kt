@@ -14,11 +14,11 @@ class ProjectSettings : AppCompatActivity() {
 
         buttonConfirm.setOnClickListener(){
 
-            if(idText.text.toString().length==0){
+            if(urlText.text.toString().length==0){
                 Toast.makeText(this, "Musisz podac ID zestawu ktory chcesz pobrac!",Toast.LENGTH_SHORT).show();
             }
             else{
-                var fileUrl = addressText.text.toString() + idText.text.toString() + extensionText.text.toString() ;
+                var fileUrl = addressText.text.toString() + urlText.text.toString() + setNameText.text.toString() ;
                 val intent = Intent(this,Project::class.java)
                 intent.putExtra("SetURL" , fileUrl);
                 startActivity(intent)

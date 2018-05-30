@@ -9,20 +9,20 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="59dp"
-        android:layout_height="30dp"
+        android:layout_width="109dp"
+        android:layout_height="49dp"
         android:layout_marginEnd="178dp"
         android:layout_marginLeft="147dp"
         android:layout_marginRight="178dp"
         android:layout_marginStart="147dp"
-        android:text="Name"
-        app:layout_constraintBottom_toTopOf="@+id/extensionText"
+        android:text="Name of your set"
+        app:layout_constraintBottom_toTopOf="@+id/setNameText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/idText" />
+        app:layout_constraintTop_toBottomOf="@+id/urlText" />
 
     <EditText
-        android:id="@+id/idText"
+        android:id="@+id/urlText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -37,7 +37,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/extensionText"
+        android:id="@+id/setNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="93dp"
@@ -46,7 +46,6 @@
         android:layout_marginStart="76dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +64,7 @@
         app:layout_constraintBottom_toTopOf="@+id/buttonNew"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/extensionText" />
+        app:layout_constraintTop_toBottomOf="@+id/setNameText" />
 
     <Button
         android:id="@+id/buttonNew"

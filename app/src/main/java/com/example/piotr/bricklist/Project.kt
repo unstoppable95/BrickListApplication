@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_project.*
 import java.io.File
 import java.io.FileNotFoundException
@@ -17,19 +18,16 @@ import java.net.URL
 class Project : AppCompatActivity() {
 
     private var fileURL : String = "";
+    private var brickSetName : String = "";
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project)
-
         try {
-            fileURL= getIntent().getStringExtra("SetURL");
-            idText.setText(fileURL);
+            urlText.setText(getIntent().getStringExtra("SetURL"));
         }
         catch (e : Exception){}
-
-
-
     }
 
     fun showSettings(view: View){
@@ -38,7 +36,17 @@ class Project : AppCompatActivity() {
     }
 
     fun downloadAdd(view: View){
-        downloadData(fileURL)
+        if(setNameText.text.toString().length>0 && urlText.text.toString().length>0)
+        {
+            fileURL=urlText.text.toString()
+            brickSetName=setNameText.text.toString();
+
+            downloadData(fileURL)
+        }
+        else{
+            Toast.makeText(this, "Musisz miec nazwe zestawu i adres URL!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     fun downloadData(path:String){
@@ -57,9 +65,8 @@ class Project : AppCompatActivity() {
 
         override fun doInBackground(vararg params: String?): String { //params - full url
             try {
-                //val itemIDEditText: EditText = findViewById<EditText>(R.id.enterItemIdText)
-               // val projectNameEditText: EditText = findViewById<EditText>(R.id.enterNameText)
-                var filename = "myfirstdown.xml";
+
+                var filename = "downloadedFile.xml";
 
                 val url = URL(params[0])
                 val connection = url.openConnection()

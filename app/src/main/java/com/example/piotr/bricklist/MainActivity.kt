@@ -23,4 +23,10 @@ class MainActivity : AppCompatActivity() {
         //intent.putExtra("stosSave", stack)
         startActivity(intent)
     }
+
+    fun showList(view : View){
+        val intent = Intent(this,Set::class.java)
+
+        startActivity(intent)
+    }
 }
