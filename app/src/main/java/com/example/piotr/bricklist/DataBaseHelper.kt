@@ -17,8 +17,6 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
 
     fun addInventoryToDatabase(inventory: myInventory){
         val values = ContentValues()
-
-
         values.put("id", inventory.id)
         values.put("Name",inventory.name)
         values.put("Active",inventory.active)
@@ -29,7 +27,109 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
     }
 
 
+    fun getBricSetId():Int{
+        var brickSetId : Int =0;
+        val query = "select count (*)+1 from Inventories"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            brickSetId=Integer.parseInt(cursor.getString(0))
+        }
+        cursor.close()
+        db.close()
+        return brickSetId
+    }
 
+    fun getBrickSetPartId():Int{
+        var brickSetPartId : Int =0;
+        val query = "select count (*)+1 from InventoriesParts"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            brickSetPartId=Integer.parseInt(cursor.getString(0))
+        }
+        cursor.close()
+        db.close()
+        return brickSetPartId
+    }
+
+
+    fun getItemID(idXML : String?):Int{
+        var itemID: Int =0;
+        val query = "select id from Parts where code = '"+idXML+"'"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            itemID=Integer.parseInt(cursor.getString(0))
+        }
+        cursor.close()
+        db.close()
+        return itemID
+
+    }
+
+
+    fun getTypeID(itemType : String?):Int{
+        var itemID: Int =0;
+        val query = "select id from ItemTypes where code = '"+itemType+"'"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            itemID=Integer.parseInt(cursor.getString(0))
+        }
+        cursor.close()
+        db.close()
+        return itemID
+
+    }
+
+    fun getColorID(color :Int?):Int{
+        var colorID : Int=0
+        val query = "select id from Colors where code=" +color
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            colorID=Integer.parseInt(cursor.getString(0))
+        }
+        cursor.close()
+        db.close()
+        return colorID
+    }
+
+    fun lookForPartInDataBase( idFromXml : String ?) :Int {
+        var isInDataBase :Int=0
+        val query = "select * from Parts where code = '" + idFromXml+ "'"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            cursor.close()
+            db.close()
+            isInDataBase=1
+        }
+        cursor.close()
+        db.close()
+        return isInDataBase
+
+    }
+
+
+
+    fun addInventoryPartToDatabase( inventoryPart : myInventoryPart){
+        val values = ContentValues()
+
+        values.put("id", inventoryPart.id)
+        values.put("InventoryID",inventoryPart.inventoryID)
+        values.put("TypeID",inventoryPart.typeID)
+        values.put("ItemID",inventoryPart.itemIDDatabase)
+        values.put("QuantityInSet",inventoryPart.quantityInSet)
+        values.put("QuantityInStore", 0)
+        values.put("ColorID", inventoryPart.colorID)
+        values.put("Extra", inventoryPart.extra)
+        val db = this.writableDatabase
+        db.insert("InventoriesParts",null,values)
+        db.close()
+
+    }
 
 
 
@@ -92,40 +192,9 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
     }
 
 
-    fun getTypeID():Int{
-        val query = "SELECT id FROM ItemTypes WHERE code =\"M\""
-        val db = this.writableDatabase
-        try {
-            val cursor = db.rawQuery(query, null)
-            var typeID = 0
-
-            if(cursor.moveToFirst()){
-                typeID = Integer.parseInt(cursor.getString(0))
-            }
-            cursor.close()
-            db.close()
-            Log.i("----Jestem TUd","---Jestem TUd" +typeID.toString())
-
-            return typeID
-        }catch(e: Exception){ Log.i("----Blad: "+e.message,"---Blad: "+e.message)}
 
 
 
-        return 0
-    }
-
-    fun getBricSetId():Int{
-        var BrickSetId : Int =0;
-        val query = "select count (*)+1 from Inventories"
-        val db = this.writableDatabase
-        val cursor = db.rawQuery(query,null)
-        if(cursor.moveToFirst()){
-           BrickSetId=Integer.parseInt(cursor.getString(0))
-        }
-        cursor.close()
-        db.close()
-        return BrickSetId
-    }
 
 
     /**
