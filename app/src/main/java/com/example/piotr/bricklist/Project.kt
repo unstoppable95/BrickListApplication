@@ -1,6 +1,7 @@
 package com.example.piotr.bricklist
 
 import android.content.Intent
+import android.database.SQLException
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -42,6 +43,41 @@ class Project : AppCompatActivity() {
             brickSetName=setNameText.text.toString();
 
             downloadData(fileURL)
+
+
+
+            var myDB : DataBaseHelper = DataBaseHelper(this)
+
+            try {
+
+                myDB.createDataBase()
+
+            } catch (ioe: IOException) {
+
+                throw Error("Unable to create database")
+
+            }
+
+
+            try {
+
+                myDB.openDataBase()
+
+            } catch (sqle: SQLException) {
+
+                throw sqle
+
+            }
+
+
+
+
+
+
+
+            myDB.getTypeID()
+
+
         }
         else{
             Toast.makeText(this, "Musisz miec nazwe zestawu i adres URL!", Toast.LENGTH_SHORT).show();
@@ -53,7 +89,6 @@ class Project : AppCompatActivity() {
         val cd = XmlDownloader()
         cd.execute(path)
     }
-
 
 
 
