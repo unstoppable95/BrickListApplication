@@ -1,5 +1,6 @@
 package com.example.piotr.bricklist
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
@@ -13,6 +14,25 @@ import java.sql.SQLException
 class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myContext, DB_NAME, null, 1) {
 
     private var myDataBase: SQLiteDatabase? = null
+
+    fun addInventoryToDatabase(inventory: myInventory){
+        val values = ContentValues()
+
+
+        values.put("id", inventory.id)
+        values.put("Name",inventory.name)
+        values.put("Active",inventory.active)
+        values.put("LastAccessed", inventory.lastAccessed)
+        val db = this.writableDatabase
+        db.insert("Inventories",null,values)
+        db.close()
+    }
+
+
+
+
+
+
 
     /**
      * Creates a empty database on the system and rewrites it with your own database.
@@ -75,11 +95,8 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
     fun getTypeID():Int{
         val query = "SELECT id FROM ItemTypes WHERE code =\"M\""
         val db = this.writableDatabase
-        //Log.i("----Jestem TUc","---Jestem TUc")
         try {
             val cursor = db.rawQuery(query, null)
-
-           // Log.i("----Jestem TUd","---Jestem TUd")
             var typeID = 0
 
             if(cursor.moveToFirst()){
@@ -95,6 +112,19 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
 
 
         return 0
+    }
+
+    fun getBricSetId():Int{
+        var BrickSetId : Int =0;
+        val query = "select count (*)+1 from Inventories"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+           BrickSetId=Integer.parseInt(cursor.getString(0))
+        }
+        cursor.close()
+        db.close()
+        return BrickSetId
     }
 
 

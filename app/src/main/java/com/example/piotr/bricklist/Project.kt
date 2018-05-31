@@ -9,24 +9,31 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_project.*
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import org.w3c.dom.Node
+import org.w3c.dom.NodeList
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
+import java.util.*
+import javax.xml.parsers.DocumentBuilderFactory
 
 class Project : AppCompatActivity() {
 
     private var fileURL : String = "";
     private var brickSetName : String = "";
-
+   // private var brickSetID : Int =0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project)
         try {
             urlText.setText(getIntent().getStringExtra("SetURL"));
+           // brickSetID=getIntent().getIntExtra("idSet", 0)
         }
         catch (e : Exception){}
     }
@@ -70,13 +77,8 @@ class Project : AppCompatActivity() {
             }
 
 
-
-
-
-
-
             myDB.getTypeID()
-
+            loadData(myDB)
 
         }
         else{
@@ -94,6 +96,97 @@ class Project : AppCompatActivity() {
 
 
 
+
+    fun loadData(myDB : DataBaseHelper){
+        val filename = "downloadedFile.xml"
+        val path = filesDir
+        val inDir = File(path,"XML")
+
+
+        if(inDir.exists()){
+
+            val file = File(inDir, filename)
+            if(file.exists()){
+
+                //val dbHandler = myDB
+
+                val xmlDoc: Document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
+
+                xmlDoc.documentElement.normalize()
+
+                val date = Date()
+                val idBrickSetInDataBase =myDB.getBricSetId()
+
+                val newInventory = myInventory(idBrickSetInDataBase,brickSetName,1, date.time.toInt())
+
+                //to jest todo in database
+                myDB.addInventoryToDatabase(newInventory)
+
+//                val items: NodeList = xmlDoc.getElementsByTagName("ITEM")
+//
+//                for (i in 0..items.length -1){
+//
+//                    val itemNode: Node = items.item(i)
+//
+//                    if(itemNode.getNodeType() == Node.ELEMENT_NODE){
+//
+//                        val elem = itemNode as Element
+//                        val children = elem.childNodes
+//
+//                        val part = myInventoryPart()
+//                        var alternate:String? = null
+//
+//                        for(j in 0..children.length - 1){
+//                            val node = children.item(j)
+//                            if(node is Element){
+//                                when(node.nodeName){
+//                                    "ITEMTYPE" -> part.itemType = node.textContent
+//                                    "ITEMID" -> part.itemID = node.textContent
+//                                    "QTY" -> part.quantityInSet = node.textContent.toInt()
+//                                    "COLOR" -> part.color = node.textContent.toInt()
+//                                    "EXTRA" -> part.extra = node.textContent
+//                                    "ALTERNATE" -> alternate = node.textContent
+//                                }
+//                            }
+//                        }
+
+
+
+//                        if(alternate.equals("N") && part.extra.equals("N") && dbHandler.checkForPart(part.itemID!!)){
+//                            part.inventoryID = dbHandler.getIDforNewInventory()
+//                            part.typeID = dbHandler.getTypeID(part.itemType!!)
+//                            part.colorID = dbHandler.getColorID(part.color!!)
+//                            part.partID = dbHandler.getPartID(part.itemID!!)
+//                            part.designID = dbHandler.getDesignID(part)
+//
+//                            if(part.designID == 0){
+//                                part.designID = dbHandler.getSizeOfCodes() + 1
+//                                dbHandler.insertDesignID(part)
+//                            }
+//
+//                            var url:String
+//
+//                            if(!dbHandler.checkIfImageIsDownloaded(part.designID!!)){
+//                                url = "https://www.lego.com/service/bricks/5/2/" + part.designID
+//                                if(!getImage(url ,part.partID!!, part.colorID!!, dbHandler)){
+//                                    url = "http://img.bricklink.com/P/" + part.colorID + "/" + part.itemID + ".gif"
+//                                    if(!getImage(url ,part.partID!!, part.colorID!!, dbHandler)){
+//                                        url = "https://www.bricklink.com/PL/" + part.itemID + ".jpg"
+//                                        getImage(url ,part.partID!!, part.colorID!!,dbHandler)
+//                                    }else{
+//                                        url = "https://www.lego.com/service/bricks/5/2/300126"
+//                                        getImage(url ,part.partID!!, part.colorID!!, dbHandler)
+//                                    }
+//                                }
+//                            }
+//                            dbHandler.addPart(part);
+//                        }
+//                    }
+//                }
+            }
+        }
+        //dialog?.cancel()
+    }
 
 
     private inner class XmlDownloader: AsyncTask<String, Int, String>(){

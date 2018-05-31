@@ -21,6 +21,7 @@ class ProjectSettings : AppCompatActivity() {
                 var fileUrl = addressText.text.toString() + urlText.text.toString() + setNameText.text.toString() ;
                 val intent = Intent(this,Project::class.java)
                 intent.putExtra("SetURL" , fileUrl);
+               // intent.putExtra("idSet",Integer.parseInt(urlText.text.toString()))
                 startActivity(intent)
             }
         }
