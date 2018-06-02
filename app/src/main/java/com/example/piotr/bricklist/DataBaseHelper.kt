@@ -15,6 +15,15 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
 
     private var myDataBase: SQLiteDatabase? = null
 
+
+    fun updateImage(partID:Int, colorID:Int, image:ContentValues){
+        val db = writableDatabase
+        val selection = "ColorID = " + colorID + " and ItemID = " + partID
+        db.update("CODES", image, selection, null)
+        db.close()
+    }
+
+
     fun addInventoryToDatabase(inventory: myInventory){
         val values = ContentValues()
         values.put("id", inventory.id)

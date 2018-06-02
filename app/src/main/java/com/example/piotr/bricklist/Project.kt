@@ -1,5 +1,6 @@
 package com.example.piotr.bricklist
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.database.SQLException
@@ -22,13 +23,12 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.collections.ArrayList
 
 class Project : AppCompatActivity() {
 
     private var fileURL : String = "";
     private var brickSetName : String = "";
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project)
@@ -54,7 +54,7 @@ class Project : AppCompatActivity() {
 
 
 
-            var myDB : DataBaseHelper = DataBaseHelper(this)
+             var myDB :DataBaseHelper = DataBaseHelper(this)
 
             try {
 
@@ -159,8 +159,10 @@ class Project : AppCompatActivity() {
                             if ( myDB.imageExists(part.designID)==0){
 
                                 Log.i("---desingID " +part.designID, "---Nie ma obrazka ")
-                                val cp = RetrieveFeedTask()
-                                cp.execute("https://www.lego.com/service/bricks/5/2/300126" )
+                                if(part.designID!!>0) {
+                                    val cp = RetrieveFeedTask(part.itemIDDatabase!!, part.colorID!!, myDB)
+                                    cp.execute("https://www.lego.com/service/bricks/5/2/300126")
+                                }
 
                             }
 
@@ -179,8 +181,12 @@ class Project : AppCompatActivity() {
 
 
 
-    private inner  class RetrieveFeedTask : AsyncTask<String, Int, String>() {
+    private inner  class RetrieveFeedTask(partID: Int,colorID : Int, myDB: DataBaseHelper) : AsyncTask<String, Int, String>() {
 
+
+        private var colorIDx=colorID
+        private var partID=partID
+        private var myDabase=myDB
 
         private var exception: Exception? = null
 
@@ -188,6 +194,8 @@ class Project : AppCompatActivity() {
             var My: InputStream? = null
             var bmp: Bitmap? = null
             var responseCode = -1
+
+
             try {
                 val url = java.net.URL(params[0])
                 val con = url.openConnection() as HttpURLConnection
@@ -206,19 +214,24 @@ class Project : AppCompatActivity() {
                     }
 
                     //checking save
-                    val fos : FileOutputStream  = openFileOutput("hihi", Context.MODE_PRIVATE);
-                    try {
+//                    val fos : FileOutputStream  = openFileOutput("hihi", Context.MODE_PRIVATE);
+//                    try {
+//
+//                        bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+//                    }
+//                    catch (ex: Exception) {
+//                        Log.e("---Exception", ex.toString())
+//                    }
+//                    fos.close()
 
-                        bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                    }
-                    catch (ex: Exception) {
-                        Log.e("---Exception", ex.toString())
-                    }
-                    fos.close()
-
-
+                    val blob =getBytesFromBitmap(bmp)
+                    val blobValues = ContentValues()
+                    blobValues.put("Image", blob)
+                    myDabase.updateImage(partID,colorIDx,blobValues)
                     My!!.close()
                 }
+
+
 
             } catch (ex: Exception) {
                 Log.e("---Exception", ex.toString())
@@ -228,6 +241,13 @@ class Project : AppCompatActivity() {
 
 
     }
+
+    fun getBytesFromBitmap(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
+        return stream.toByteArray()
+    }
+
 
 
     private inner class XmlDownloader: AsyncTask<String, Int, String>(){
