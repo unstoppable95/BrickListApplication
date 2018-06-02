@@ -77,7 +77,124 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
 
     }
 
+    fun getMyInventoryIDIP(nameIn: String?):Int{
+        var myID =0
+        val query = "select id from Inventories where name = '"+nameIn+"'"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            myID=Integer.parseInt(cursor.getString(0))
+        }
+        cursor.close()
+        db.close()
+        return myID
+    }
 
+    fun getItemTypeIP(typeID : Int?) :String{
+        var myType =""
+        val query = "select code from ItemTypes where id = " +typeID
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            myType=cursor.getString(0)
+        }
+        cursor.close()
+        db.close()
+        return myType
+    }
+
+    fun getColorIP(colID : Int?) :Int{
+        var myColor =0
+        val query = "select code from colors where id = " +colID
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            myColor=Integer.parseInt(cursor.getString(0))
+        }
+        cursor.close()
+        db.close()
+        return myColor
+    }
+
+    fun getNameIP(IDdatabase : Int?) :String{
+        var myName =""
+        val query = "select name from Parts where id = " +IDdatabase
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            myName=cursor.getString(0)
+        }
+        cursor.close()
+        db.close()
+        return myName
+    }
+
+    fun getImageIP(desingn:Int?):ByteArray ?{
+        var image:ByteArray ?= null
+        val query = "select Image from Codes where Code = " + desingn
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()) {
+            image = cursor.getBlob(0)
+        }
+        cursor.close()
+        db.close()
+        return image
+
+
+    }
+
+
+    fun getMyInventoriesPart(inxentoryName: String) : ArrayList<myInventoryPart> {
+        val inventoriesPart : ArrayList<myInventoryPart> = java.util.ArrayList()
+
+
+        val query = "SELECT * FROM InventoriesParts WHERE InventoryID = " + getMyInventoryIDIP(inxentoryName)
+
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query, null)
+        var inventoryPart =myInventoryPart()
+
+        if(cursor.moveToFirst()){
+            inventoryPart.id = Integer.parseInt(cursor.getString(0))
+            inventoryPart.inventoryID = Integer.parseInt(cursor.getString(1))
+            inventoryPart.typeID = Integer.parseInt(cursor.getString(2))
+            inventoryPart.itemIDDatabase = Integer.parseInt(cursor.getString(3))
+            inventoryPart.quantityInSet = Integer.parseInt(cursor.getString(4))
+            inventoryPart.quantityInStore = Integer.parseInt(cursor.getString(5))
+            inventoryPart.colorID = Integer.parseInt(cursor.getString(6))
+            inventoryPart.extra = cursor.getString(7)
+
+            //getDesignId(part.colorID,part.itemIDDatabase)
+            inventoryPart.itemType = getItemTypeIP(inventoryPart.typeID)
+            inventoryPart.color =getColorIP(inventoryPart.colorID!!)
+            inventoryPart.name = getNameIP(inventoryPart.itemIDDatabase)
+            //inventoryPart.image=getImageIP(getDesignId(inventoryPart.colorID,inventoryPart.itemIDDatabase))
+
+            inventoriesPart.add(inventoryPart)
+        }
+        while(cursor.moveToNext()){
+            var inventoryPart =myInventoryPart()
+            inventoryPart.id = Integer.parseInt(cursor.getString(0))
+            inventoryPart.inventoryID = Integer.parseInt(cursor.getString(1))
+            inventoryPart.typeID = Integer.parseInt(cursor.getString(2))
+            inventoryPart.itemIDDatabase = Integer.parseInt(cursor.getString(3))
+            inventoryPart.quantityInSet = Integer.parseInt(cursor.getString(4))
+            inventoryPart.quantityInStore = Integer.parseInt(cursor.getString(5))
+            inventoryPart.colorID = Integer.parseInt(cursor.getString(6))
+            inventoryPart.extra = cursor.getString(7)
+
+            inventoryPart.itemType = getItemTypeIP(inventoryPart.typeID)
+            inventoryPart.color =getColorIP(inventoryPart.colorID)
+            inventoryPart.name = getNameIP(inventoryPart.itemIDDatabase!!)
+           // inventoryPart.image=getImageIP(getDesignId(inventoryPart.colorID,inventoryPart.itemIDDatabase))
+            inventoriesPart.add(inventoryPart)
+        }
+        cursor.close()
+        db.close()
+        return inventoriesPart
+
+    }
 
     fun getMyInventories(): ArrayList<myInventory>{
         val inventories : ArrayList<myInventory> = java.util.ArrayList()

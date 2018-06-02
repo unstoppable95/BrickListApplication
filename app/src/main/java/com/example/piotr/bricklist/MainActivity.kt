@@ -36,12 +36,12 @@ class MainActivity : AppCompatActivity() {
         var adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, inventoriesNames)
         listView.adapter = adapter
 
-//        listView.onItemClickListener = AdapterView.OnItemClickListener{
-//            adapterView, view, position, id ->
-//            val intent = Intent(this, LegoSetActivity::class.java )
-//            intent.putExtra("name",inventoriesNames[position] )
-//            startActivity(intent)
-//        }
+        listView.onItemClickListener = AdapterView.OnItemClickListener{
+            adapterView, view, position, id ->
+            val intent = Intent(this, Set::class.java )
+            intent.putExtra("name",inventoriesNames[position] )
+            startActivity(intent)
+        }
 
 
     }
