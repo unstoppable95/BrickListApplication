@@ -15,6 +15,7 @@ class myInventoryPart {
 
     var quantityInSet:Int? = null //jest w xml qty
     var quantityInStore:Int = 0 // ile zebralem
+
     var extra:String? = null // extra jest w xml
     var name:String? = null // jest w Parts w bazie, wybieram na podstawie partID where id = partsid
 

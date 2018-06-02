@@ -69,6 +69,20 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
     }
 
 
+    fun getDesignId( colorID: Int? , itemID : Int?) : Int{
+        var designID: Int =0;
+        val query = "select code from Codes where itemID = "+itemID+" and colorID = " +colorID
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            designID=Integer.parseInt(cursor.getString(0))
+        }
+        cursor.close()
+        db.close()
+        return designID
+    }
+
+
     fun getTypeID(itemType : String?):Int{
         var itemID: Int =0;
         val query = "select id from ItemTypes where code = '"+itemType+"'"
@@ -85,7 +99,7 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
 
     fun getColorID(color :Int?):Int{
         var colorID : Int=0
-        val query = "select id from Colors where code=" +color
+        val query = "select id from Colors where code = " +color
         val db = this.writableDatabase
         val cursor = db.rawQuery(query,null)
         if(cursor.moveToFirst()){
@@ -110,6 +124,23 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
         db.close()
         return isInDataBase
 
+    }
+
+    fun imageExists(designID: Int?):Int{
+        var isInDataBase :Int=0
+        val query = "select Image from Codes where code = " + designID
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            if(cursor.getBlob(0) == null){
+                isInDataBase=0
+            }else{
+                isInDataBase=1
+            }
+        }
+        cursor.close()
+        db.close()
+        return isInDataBase
     }
 
 

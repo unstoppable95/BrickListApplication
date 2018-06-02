@@ -26,14 +26,14 @@ class Project : AppCompatActivity() {
 
     private var fileURL : String = "";
     private var brickSetName : String = "";
-   // private var brickSetID : Int =0;
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project)
         try {
             urlText.setText(getIntent().getStringExtra("SetURL"));
-           // brickSetID=getIntent().getIntExtra("idSet", 0)
+
         }
         catch (e : Exception){}
     }
@@ -125,7 +125,7 @@ class Project : AppCompatActivity() {
 
                         val elem = itemNode as Element
                         val children = elem.childNodes
-
+                        var imageURL : String?
                         val part = myInventoryPart()
                         var alternate: String? = null
 
@@ -152,6 +152,18 @@ class Project : AppCompatActivity() {
                             part.itemIDDatabase = myDB.getItemID(part.itemIDXML)
                             part.inventoryID = idBrickSetInDataBase
                             part.id = myDB.getBrickSetPartId()
+                            part.designID = myDB.getDesignId(part.colorID,part.itemIDDatabase)
+
+
+                            if ( myDB.imageExists(part.designID)==0){
+
+                                Log.i("---desingID " +part.designID, "---Nie ma obrazka ")
+
+
+                            }
+
+
+
                             myDB.addInventoryPartToDatabase(part);
 
                         }
