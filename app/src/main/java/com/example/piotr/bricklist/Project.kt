@@ -1,7 +1,10 @@
 package com.example.piotr.bricklist
 
+import android.content.Context
 import android.content.Intent
 import android.database.SQLException
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -13,10 +16,8 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
+import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
@@ -158,7 +159,8 @@ class Project : AppCompatActivity() {
                             if ( myDB.imageExists(part.designID)==0){
 
                                 Log.i("---desingID " +part.designID, "---Nie ma obrazka ")
-
+                                val cp = RetrieveFeedTask()
+                                cp.execute("https://www.lego.com/service/bricks/5/2/300126" )
 
                             }
 
@@ -175,6 +177,57 @@ class Project : AppCompatActivity() {
 
     }
 
+
+
+    private inner  class RetrieveFeedTask : AsyncTask<String, Int, String>() {
+
+
+        private var exception: Exception? = null
+
+        override fun doInBackground (vararg params: String?): String {
+            var My: InputStream? = null
+            var bmp: Bitmap? = null
+            var responseCode = -1
+            try {
+                val url = java.net.URL(params[0])
+                val con = url.openConnection() as HttpURLConnection
+                con.setDoInput(true)
+                con.connect()
+                responseCode = con.getResponseCode()
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    //download
+                    My = con.getInputStream()
+                    bmp = BitmapFactory.decodeStream(My)
+                    if (bmp!=null){
+                        Log.i("---COS SIE STALO " , "---Bitmapa nie jest null niby ")
+                    }
+                    else{
+                        Log.i("---COS SIE STALO  ", "---birmapa null :(  ")
+                    }
+
+                    //checking save
+                    val fos : FileOutputStream  = openFileOutput("hihi", Context.MODE_PRIVATE);
+                    try {
+
+                        bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                    }
+                    catch (ex: Exception) {
+                        Log.e("---Exception", ex.toString())
+                    }
+                    fos.close()
+
+
+                    My!!.close()
+                }
+
+            } catch (ex: Exception) {
+                Log.e("---Exception", ex.toString())
+            }
+            return "success"
+        }
+
+
+    }
 
 
     private inner class XmlDownloader: AsyncTask<String, Int, String>(){
