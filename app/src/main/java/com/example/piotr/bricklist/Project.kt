@@ -118,6 +118,7 @@ class Project : AppCompatActivity() {
 
                 val items: NodeList = xmlDoc.getElementsByTagName("ITEM")
 
+                Log.i("---lista item dlu" + items.length ," msesasasa")
                 for (i in 0..items.length - 1) {
 
                     val itemNode: Node = items.item(i)
@@ -157,16 +158,26 @@ class Project : AppCompatActivity() {
 
 
                             if ( myDB.imageExists(part.designID)==0){
-
+                                var adress=""
                                 Log.i("---desingID " +part.designID, "---Nie ma obrazka ")
                                 if(part.designID!!>0) {
+
                                     val cp = RetrieveFeedTask(part.itemIDDatabase!!, part.colorID!!, myDB)
-                                    cp.execute("https://www.lego.com/service/bricks/5/2/300126")
+                                    adress="https://www.lego.com/service/bricks/5/2/"+part.designID
+
+                                    if(!cp.execute(adress).get()){
+
+                                        adress="https://www.bricklink.com/PL/" + part.designID + ".jpg"
+
+                                        if(!cp.execute(adress).get()){
+                                            adress= "http://img.bricklink.com/P/" + part.colorID + "/" + part.itemIDDatabase + ".gif"
+                                            cp.execute(adress)
+                                        }
+                                    }
+
                                 }
 
                             }
-
-
 
                             myDB.addInventoryPartToDatabase(part);
 
@@ -181,7 +192,7 @@ class Project : AppCompatActivity() {
 
 
 
-    private inner  class RetrieveFeedTask(partID: Int,colorID : Int, myDB: DataBaseHelper) : AsyncTask<String, Int, String>() {
+    private inner  class RetrieveFeedTask(partID: Int,colorID : Int, myDB: DataBaseHelper) : AsyncTask<String, Int, Boolean>() {
 
 
         private var colorIDx=colorID
@@ -190,7 +201,7 @@ class Project : AppCompatActivity() {
 
         private var exception: Exception? = null
 
-        override fun doInBackground (vararg params: String?): String {
+        override fun doInBackground (vararg params: String?): Boolean {
             var My: InputStream? = null
             var bmp: Bitmap? = null
             var responseCode = -1
@@ -235,8 +246,9 @@ class Project : AppCompatActivity() {
 
             } catch (ex: Exception) {
                 Log.e("---Exception", ex.toString())
+                return false
             }
-            return "success"
+            return true
         }
 
 
