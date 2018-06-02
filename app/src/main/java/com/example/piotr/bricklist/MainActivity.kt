@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.FileOutputStream
@@ -13,12 +15,35 @@ import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
 
+    private var list: ArrayList<myInventory>?=null
+    var inventoriesNames: ArrayList<String?> = java.util.ArrayList()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
 
-       copyDB()
+        copyDB()
+        var myDB :DataBaseHelper = DataBaseHelper(this)
+        list=myDB.getMyInventories()
+
+
+        for(i in 0..list!!.size-1){
+            inventoriesNames.add(list!!.get(i).name)
+        }
+
+        var adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, inventoriesNames)
+        listView.adapter = adapter
+
+//        listView.onItemClickListener = AdapterView.OnItemClickListener{
+//            adapterView, view, position, id ->
+//            val intent = Intent(this, LegoSetActivity::class.java )
+//            intent.putExtra("name",inventoriesNames[position] )
+//            startActivity(intent)
+//        }
+
+
     }
 
     fun NewProject(view : View){

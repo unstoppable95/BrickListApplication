@@ -78,6 +78,36 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
     }
 
 
+
+    fun getMyInventories(): ArrayList<myInventory>{
+        val inventories : ArrayList<myInventory> = java.util.ArrayList()
+
+        val query = "Select * FROM Inventories"
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query, null)
+        var inventory =myInventory()
+
+        if(cursor.moveToFirst()){
+            inventory.id = Integer.parseInt(cursor.getString(0))
+            inventory.name = cursor.getString(1)
+            inventory.active = Integer.parseInt(cursor.getString(2))
+            inventory.lastAccessed = Integer.parseInt(cursor.getString(3))
+            inventories.add(inventory)
+        }
+
+        while(cursor.moveToNext()){
+            var inventory =myInventory()
+            inventory.id = Integer.parseInt(cursor.getString(0))
+            inventory.name = cursor.getString(1)
+            inventory.active = Integer.parseInt(cursor.getString(2))
+            inventory.lastAccessed = Integer.parseInt(cursor.getString(3))
+            inventories.add(inventory)
+        }
+        cursor.close()
+        db.close()
+        return inventories
+    }
+
     fun getDesignId( colorID: Int? , itemID : Int?) : Int{
         var designID: Int =0;
         val query = "select code from Codes where itemID = "+itemID+" and colorID = " +colorID
