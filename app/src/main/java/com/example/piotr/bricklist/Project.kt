@@ -118,7 +118,8 @@ class Project : AppCompatActivity() {
 
                 val items: NodeList = xmlDoc.getElementsByTagName("ITEM")
 
-                Log.i("---lista item dlu" + items.length ," msesasasa")
+                Log.i("---lista item dlugosc " + items.length ," msesasasa")
+
                 for (i in 0..items.length - 1) {
 
                     val itemNode: Node = items.item(i)

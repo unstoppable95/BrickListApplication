@@ -2,6 +2,7 @@ package com.example.piotr.bricklist
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ListView
 import kotlinx.android.synthetic.main.activity_project.*
 
@@ -31,7 +32,7 @@ class Set : AppCompatActivity() {
 
 
         myInventoryPartList=myDB.getMyInventoriesPart(myInventoryName)
-
+        Log.i("---dlugosc listy z bazy " + myInventoryPartList!!.size,"xxx")
 
 
 

@@ -169,7 +169,8 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
             inventoryPart.itemType = getItemTypeIP(inventoryPart.typeID)
             inventoryPart.color =getColorIP(inventoryPart.colorID!!)
             inventoryPart.name = getNameIP(inventoryPart.itemIDDatabase)
-            //inventoryPart.image=getImageIP(getDesignId(inventoryPart.colorID,inventoryPart.itemIDDatabase))
+            inventoryPart.designID = getDesignId(inventoryPart.colorID,inventoryPart.itemIDDatabase)
+            inventoryPart.image=getImageIP( inventoryPart.designID )
 
             inventoriesPart.add(inventoryPart)
         }
@@ -187,7 +188,8 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
             inventoryPart.itemType = getItemTypeIP(inventoryPart.typeID)
             inventoryPart.color =getColorIP(inventoryPart.colorID)
             inventoryPart.name = getNameIP(inventoryPart.itemIDDatabase!!)
-           // inventoryPart.image=getImageIP(getDesignId(inventoryPart.colorID,inventoryPart.itemIDDatabase))
+            inventoryPart.designID = getDesignId(inventoryPart.colorID,inventoryPart.itemIDDatabase)
+            inventoryPart.image=getImageIP( inventoryPart.designID )
             inventoriesPart.add(inventoryPart)
         }
         cursor.close()

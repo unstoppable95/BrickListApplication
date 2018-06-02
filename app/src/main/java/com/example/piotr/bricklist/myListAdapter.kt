@@ -62,9 +62,14 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
         viewHolder.countNeeded?.text=userDto.quantityInSet.toString()
         viewHolder.countHave?.text=userDto.quantityInStore.toString()
 
-//        var x : ByteArray = userDto.image!!
-//        var y : Bitmap = ByteArrayToBitmap(x)
-//        viewHolder.image?.setImageBitmap(y)
+        try {
+            var x: ByteArray = userDto.image!!
+            var y: Bitmap = ByteArrayToBitmap(x)
+            viewHolder.image?.setImageBitmap(y)
+        }
+        catch (e : Exception){
+            Log.i("--wyjebalem sie w konwersji to bit array","xxx")
+        }
 
         return view as View
     }
