@@ -129,6 +129,20 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
         return myName
     }
 
+
+    fun getItemIDIP(IDdatabase : Int?) :String{
+        var myName =""
+        val query = "select code from Parts where id = " +IDdatabase
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            myName=cursor.getString(0)
+        }
+        cursor.close()
+        db.close()
+        return myName
+    }
+
     fun getImageIP(desingn:Int?):ByteArray ?{
         var image:ByteArray ?= null
         val query = "select Image from Codes where Code = " + desingn
@@ -192,10 +206,12 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
             inventoryPart.colorID = Integer.parseInt(cursor.getString(6))
             inventoryPart.extra = cursor.getString(7)
 
+
             //getDesignId(part.colorID,part.itemIDDatabase)
             inventoryPart.itemType = getItemTypeIP(inventoryPart.typeID)
             inventoryPart.color =getColorIP(inventoryPart.colorID!!)
             inventoryPart.name = getNameIP(inventoryPart.itemIDDatabase)
+            inventoryPart.itemIDXML=getItemIDIP(inventoryPart.itemIDDatabase)
             inventoryPart.designID = getDesignId(inventoryPart.colorID,inventoryPart.itemIDDatabase)
             inventoryPart.image=getImageIP( inventoryPart.designID )
 
@@ -215,6 +231,7 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
             inventoryPart.itemType = getItemTypeIP(inventoryPart.typeID)
             inventoryPart.color =getColorIP(inventoryPart.colorID)
             inventoryPart.name = getNameIP(inventoryPart.itemIDDatabase!!)
+            inventoryPart.itemIDXML=getItemIDIP(inventoryPart.itemIDDatabase)
             inventoryPart.designID = getDesignId(inventoryPart.colorID,inventoryPart.itemIDDatabase)
             inventoryPart.image=getImageIP( inventoryPart.designID )
             inventoriesPart.add(inventoryPart)

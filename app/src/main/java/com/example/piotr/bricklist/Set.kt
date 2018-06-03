@@ -54,11 +54,7 @@ class Set : AppCompatActivity() {
 
 
         val listView: ListView = findViewById<ListView>(R.id.listView)
-//        val names: ArrayList<String> = java.util.ArrayList()
-//        names.add("Kasia")
-//        names.add("Piciu")
-//        names.add("Agata")
-//        names.add("Anka")
+
 
 
         myInventoryPartList=myDB.getMyInventoriesPart(myInventoryName)
@@ -81,50 +77,66 @@ class Set : AppCompatActivity() {
 
     fun export( v: View){
 
-//        try {
             val docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
             val doc = docBuilder.newDocument()
-
-            val rootElement: Element = doc.createElement("person")
-
-            rootElement.setAttribute("person-id", "1001")
-
-            val lastName: Element = doc.createElement("last-name")
-
-            lastName.appendChild(doc.createTextNode("Doe"))
-            rootElement.appendChild(lastName)
-
-            val firstName: Element = doc.createElement("first-name")
-            firstName.appendChild(doc.createTextNode("John"))
-            rootElement.appendChild(firstName)
-            doc.appendChild(rootElement)
+            val rootElement: Element = doc.createElement("INVENTORY")
 
 
+        makeRequestExternalStorage()
+        if (checkPermission()) {
 
-           // requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-            makeRequestExternalStorage()
-            if (checkPermission()) {
+                var PartList = myDB.getMyInventoriesPart(myInventoryName)
 
-                val tranformer: Transformer = TransformerFactory.newInstance().newTransformer()
-                tranformer.setOutputProperty(OutputKeys.INDENT, "yes")
-                tranformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
-                //val path =this.filesDir
-                val path = Environment.getExternalStorageDirectory()
-                val outDir = File(path, "Output")
-                outDir.mkdir()
+                for (part in PartList) {
+                    if (part.quantityInStore != part.quantityInSet) {
+                        val rootItem = doc.createElement("ITEM")
 
-                val file = File(outDir, "text.xml")
-                Log.i("---sciezka " + file.absolutePath, "mesggasasa")
-
-                tranformer.transform(DOMSource(doc), StreamResult(file))
-
-            }
+                        val itemType = doc.createElement("ITEMTYPE")
+                        itemType.appendChild(doc.createTextNode(part.itemType))
+                        rootItem.appendChild(itemType)
 
 
-//        }
-//            catch(e:Exception) {
-//                Log.i("---blad " + e.message, "mesggasasa")
-//            }
+
+                        val itemId = doc.createElement("ITEMID")
+                        itemId.appendChild(doc.createTextNode(part.itemIDXML.toString()))
+                        rootItem.appendChild(itemId)
+
+                        val qty = doc.createElement("QTY")
+                        qty.appendChild(doc.createTextNode((part.quantityInSet!! - part.quantityInStore).toString()))
+                        rootItem.appendChild(qty)
+
+
+                        val color = doc.createElement("COLOR")
+                        color.appendChild(doc.createTextNode(part.color.toString()))
+                        rootItem.appendChild(color)
+
+                        val extra = doc.createElement("EXTRA")
+                        extra.appendChild(doc.createTextNode((part.extra).toString()))
+                        rootItem.appendChild(extra)
+
+                        rootElement.appendChild(rootItem)
+                    }
+
+                }
+
+                doc.appendChild(rootElement)
+
+
+
+                    val tranformer: Transformer = TransformerFactory.newInstance().newTransformer()
+                    tranformer.setOutputProperty(OutputKeys.INDENT, "yes")
+                    tranformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+
+                    val path = Environment.getExternalStorageDirectory()
+                    val outDir = File(path, "Output")
+                    outDir.mkdir()
+
+                    val file = File(outDir, "text.xml")
+                    Log.i("---sciezka " + file.absolutePath, "mesggasasa")
+
+                    tranformer.transform(DOMSource(doc), StreamResult(file))
+
+                }
 
 
 
