@@ -23,21 +23,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         copyDB()
-
-        var myDB :DataBaseHelper = DataBaseHelper(this)
+        var myDB  = DataBaseHelper(this)
         list=myDB.getMyInventories()
-
         lastAcced.clear()
-
-//        if (list!!.size==1) {
-//            inventoriesNames.add(list!!.get(0).name)
-//            lastAcced.add(list!!.get(0).lastAccessed!!)
-//        }
-
-        Log.i("---rozmiar " + list!!.size, "msg")
-
         for(i in 0..list!!.size-1){
             inventoriesNames.add(list!!.get(i).name)
             lastAcced.add(list!!.get(i).lastAccessed!!)
@@ -53,21 +42,15 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("name",inventoriesNames[position] )
             startActivity(intent)
         }
-
-        Log.i("---jestem w oncrea", "msg")
-
-
     }
 
     fun NewProject(view : View){
         val intent = Intent(this,Project::class.java)
-        //intent.putExtra("stosSave", stack)
         startActivity(intent)
     }
 
     fun sortList(view : View){
-        var myDB :DataBaseHelper = DataBaseHelper(this)
-
+        var myDB = DataBaseHelper(this)
         list!!.clear()
         list=myDB.getMyInventories()
         inventoriesNames.clear()
@@ -77,17 +60,12 @@ class MainActivity : AppCompatActivity() {
             lastAcced.add(list!!.get(i).lastAccessed!!)
 
         }
-
         Collections.sort(lastAcced , Collections.reverseOrder())
-
         for(i in 0..lastAcced!!.size-1){
            inventoriesNames.add(myDB.getInventoryNameByDate(lastAcced.get(i)))
         }
-
         var adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, inventoriesNames)
         listView.adapter = adapter
-
-
     }
 
     private fun copyDB() {

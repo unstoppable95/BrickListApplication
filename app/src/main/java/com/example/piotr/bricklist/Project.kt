@@ -50,41 +50,25 @@ class Project : AppCompatActivity() {
             fileURL=urlText.text.toString()
             brickSetName=setNameText.text.toString();
 
-            //downloadData(fileURL)
             val cd = XmlDownloader(this)
             var name:String =cd.execute(fileURL).get()
-
-
-             var myDB :DataBaseHelper = DataBaseHelper(this)
+            var myDB :DataBaseHelper = DataBaseHelper(this)
             loadData(myDB)
-
-
-
-
 
         }
         else{
             Toast.makeText(this, "Musisz miec nazwe zestawu i adres URL!", Toast.LENGTH_SHORT).show();
         }
-
     }
-
-
-
-
 
     fun loadData(myDB : DataBaseHelper) {
         val filename = "downloadedFile.xml"
         val path = filesDir
         val inDir = File(path, "XML")
-
-
         if (inDir.exists()) {
 
             val file = File(inDir, filename)
             if (file.exists()) {
-
-
                 val xmlDoc: Document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
 
                 xmlDoc.documentElement.normalize()
@@ -96,9 +80,6 @@ class Project : AppCompatActivity() {
                 myDB.addInventoryToDatabase(newInventory)
 
                 val items: NodeList = xmlDoc.getElementsByTagName("ITEM")
-
-                Log.i("---lista item dlugosc " + items.length ," msesasasa")
-
                 for (i in 0..items.length - 1) {
 
                     val itemNode: Node = items.item(i)
@@ -139,16 +120,12 @@ class Project : AppCompatActivity() {
 
                             if ( myDB.imageExists(part.designID)==0){
                                 var adress=""
-                                Log.i("---desingID " +part.designID, "---Nie ma obrazka ")
-                                if(part.designID!!>0) {
 
+                                if(part.designID!!>0) {
                                     val cp = RetrieveFeedTask(part.itemIDDatabase!!, part.colorID!!, myDB)
                                     adress="https://www.lego.com/service/bricks/5/2/"+part.designID
-
                                     if(!cp.execute(adress).get()){
-
                                         adress="https://www.bricklink.com/PL/" + part.designID + ".jpg"
-
                                         if(!cp.execute(adress).get()){
                                             adress= "http://img.bricklink.com/P/" + part.colorID + "/" + part.itemIDDatabase + ".gif"
                                             cp.execute(adress)
@@ -171,10 +148,6 @@ class Project : AppCompatActivity() {
         val intent = Intent(this,MainActivity::class.java)
 
         startActivity(intent)
-
-
-
-
 
     }
 
@@ -206,22 +179,11 @@ class Project : AppCompatActivity() {
                     My = con.getInputStream()
                     bmp = BitmapFactory.decodeStream(My)
                     if (bmp!=null){
-                        Log.i("---COS SIE STALO " , "---Bitmapa nie jest null niby ")
+                        Log.i("---DOWNLOAD IMAGE OK " , "---Download IMAGE OK")
                     }
                     else{
-                        Log.i("---COS SIE STALO  ", "---birmapa null :(  ")
+                      //  Log.i("---COS SIE STALO  ", "---birmapa null :(  ")
                     }
-
-                    //checking save
-//                    val fos : FileOutputStream  = openFileOutput("hihi", Context.MODE_PRIVATE);
-//                    try {
-//
-//                        bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
-//                    }
-//                    catch (ex: Exception) {
-//                        Log.e("---Exception", ex.toString())
-//                    }
-//                    fos.close()
 
                     val blob =getBytesFromBitmap(bmp)
                     val blobValues = ContentValues()
@@ -230,10 +192,7 @@ class Project : AppCompatActivity() {
                     My!!.close()
                 }
 
-
-
             } catch (ex: Exception) {
-                Log.e("---Exception", ex.toString())
                 return false
             }
             return true
@@ -261,10 +220,8 @@ class Project : AppCompatActivity() {
                 val url = URL(params[0])
                 val connection = url.openConnection()
                 connection.connect()
-                // val lengthOfFile = connection.contentLength
                 val isStream = url.openStream()
                 val testDirectory = File("$filesDir/XML")
-                Log.i("----- XXXXX"+"$filesDir/XML","-----$filesDir/XML")
                 if (!testDirectory.exists()) testDirectory.mkdir()
                 val fos = FileOutputStream("$testDirectory/$filename")
                 val data = ByteArray(1024)
@@ -292,9 +249,6 @@ class Project : AppCompatActivity() {
                 Log.i("-----IO Exception", e.toString())
                 return "IO Exception"
             }
-
-            var myDB :DataBaseHelper = DataBaseHelper(con)
-
 
             return "success"
         }

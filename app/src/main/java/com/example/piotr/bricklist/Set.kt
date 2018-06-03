@@ -35,8 +35,6 @@ class Set : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set)
-
-
         try {
             myInventoryName= getIntent().getStringExtra ("name")
             var myDB1 :DataBaseHelper = DataBaseHelper(this)
@@ -52,36 +50,21 @@ class Set : AppCompatActivity() {
         }
         catch (e : Exception){}
 
-
         val listView: ListView = findViewById<ListView>(R.id.listView)
 
-
-
         myInventoryPartList=myDB.getMyInventoriesPart(myInventoryName)
-        Log.i("---dlugosc listy z bazy " + myInventoryPartList!!.size,"xxx")
-
-
-
-
-
-
 
         var adapter = myListAdapter(this, myInventoryPartList!!, this)
         listView?.adapter = adapter
         adapter.notifyDataSetChanged()
 
-
-
     }
-
 
     fun export( v: View){
 
             val docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
             val doc = docBuilder.newDocument()
             val rootElement: Element = doc.createElement("INVENTORY")
-
-
         makeRequestExternalStorage()
         if (checkPermission()) {
 
@@ -132,18 +115,17 @@ class Set : AppCompatActivity() {
                     outDir.mkdir()
 
                     val file = File(outDir, "text.xml")
-                    Log.i("---sciezka " + file.absolutePath, "mesggasasa")
+                    Log.i("---Sciezka XML " + file.absolutePath, "XML path")
 
                     tranformer.transform(DOMSource(doc), StreamResult(file))
 
                 }
 
-
-
     }
 
-    private fun makeRequestExternalStorage() {
+    private fun makeRequestExternalStorage()  {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+
     }
 
     private fun checkPermission() : Boolean{

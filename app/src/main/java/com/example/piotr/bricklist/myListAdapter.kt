@@ -15,7 +15,6 @@ import java.io.ByteArrayInputStream
 
 class myListAdapter (private var activity: Activity, private var items: ArrayList<myInventoryPart> , private var context : Context) : BaseAdapter(){
 
-
     private class ViewHolder(row: View?) {
         var desription: TextView? = null
         var layout: RelativeLayout? = null
@@ -38,9 +37,7 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
     }
 
     fun ByteArrayToBitmap(byteArray: ByteArray): Bitmap {
-        //Log.i("---", "kasia")
         val arrayInputStream = ByteArrayInputStream(byteArray)
-       // Log.i("---", "piciu")
         return BitmapFactory.decodeStream(arrayInputStream)
     }
 
@@ -58,29 +55,24 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
         }
 
         var userDto = items[position]
-
         viewHolder.desription?.text = userDto.name
         viewHolder.countNeeded?.text=userDto.quantityInSet.toString()
         viewHolder.countHave?.text=userDto.quantityInStore.toString()
-
         if(userDto.quantityInStore==userDto.quantityInSet){
             viewHolder.layout?.setBackgroundColor(GREEN)
         }
-
-
         try {
             var x: ByteArray = userDto.image!!
             var y: Bitmap = ByteArrayToBitmap(x)
             viewHolder.image?.setImageBitmap(y)
         }
         catch (e : Exception){
-            Log.i("--wyjebalem sie w konwersji to bit array","xxx")
+            Log.i("---Konwersja do bitarray","error")
         }
-
 
         //function plus brick
         viewHolder.buttonPlus?.setOnClickListener(){
-            var myDB :DataBaseHelper = DataBaseHelper(context)
+            var myDB  = DataBaseHelper(context)
             if(userDto.quantityInStore<userDto.quantityInSet!!){
                 userDto.quantityInStore+=1
                 viewHolder.countHave?.text=userDto.quantityInStore.toString()
@@ -91,34 +83,25 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
             if(userDto.quantityInStore==userDto.quantityInSet){
                 viewHolder.layout?.setBackgroundColor(GREEN)
             }
-
             myDB.close()
         }
 
         //function minus brick
         viewHolder.buttonMinus?.setOnClickListener(){
-            var myDB :DataBaseHelper = DataBaseHelper(context)
+            var myDB = DataBaseHelper(context)
             if(userDto.quantityInStore>0){
                 userDto.quantityInStore-=1
                 viewHolder.countHave?.text=userDto.quantityInStore.toString()
                 myDB.updateInStore(userDto.quantityInStore,userDto.id)
             }
-
             if(userDto.quantityInStore<userDto.quantityInSet!!){
                 viewHolder.layout?.setBackgroundColor(TRANSPARENT)
             }
             myDB.close()
         }
 
-
-
-
         return view as View
     }
-
-
-
-
 
     override fun getItem(i: Int): Any {
         return items[i]

@@ -206,8 +206,6 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
             inventoryPart.colorID = Integer.parseInt(cursor.getString(6))
             inventoryPart.extra = cursor.getString(7)
 
-
-            //getDesignId(part.colorID,part.itemIDDatabase)
             inventoryPart.itemType = getItemTypeIP(inventoryPart.typeID)
             inventoryPart.color =getColorIP(inventoryPart.colorID!!)
             inventoryPart.name = getNameIP(inventoryPart.itemIDDatabase)
