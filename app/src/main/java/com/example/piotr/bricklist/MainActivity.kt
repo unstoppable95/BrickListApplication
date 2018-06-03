@@ -24,13 +24,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         copyDB()
 
         var myDB :DataBaseHelper = DataBaseHelper(this)
         list=myDB.getMyInventories()
 
         lastAcced.clear()
+
+//        if (list!!.size==1) {
+//            inventoriesNames.add(list!!.get(0).name)
+//            lastAcced.add(list!!.get(0).lastAccessed!!)
+//        }
+
+        Log.i("---rozmiar " + list!!.size, "msg")
 
         for(i in 0..list!!.size-1){
             inventoriesNames.add(list!!.get(i).name)
@@ -48,6 +54,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        Log.i("---jestem w oncrea", "msg")
+
 
     }
 
@@ -60,6 +68,7 @@ class MainActivity : AppCompatActivity() {
     fun sortList(view : View){
         var myDB :DataBaseHelper = DataBaseHelper(this)
 
+        list!!.clear()
         list=myDB.getMyInventories()
         inventoriesNames.clear()
         lastAcced.clear()

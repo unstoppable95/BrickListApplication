@@ -50,35 +50,17 @@ class Project : AppCompatActivity() {
             fileURL=urlText.text.toString()
             brickSetName=setNameText.text.toString();
 
-            downloadData(fileURL)
-
+            //downloadData(fileURL)
+            val cd = XmlDownloader(this)
+            var name:String =cd.execute(fileURL).get()
 
 
              var myDB :DataBaseHelper = DataBaseHelper(this)
-
-            try {
-
-                myDB.createDataBase()
-
-            } catch (ioe: IOException) {
-
-                throw Error("Unable to create database")
-
-            }
-
-
-            try {
-
-                myDB.openDataBase()
-
-            } catch (sqle: SQLException) {
-
-                throw sqle
-
-            }
-
-
             loadData(myDB)
+
+
+
+
 
         }
         else{
@@ -87,10 +69,7 @@ class Project : AppCompatActivity() {
 
     }
 
-    fun downloadData(path:String){
-        val cd = XmlDownloader()
-        cd.execute(path)
-    }
+
 
 
 
@@ -271,8 +250,9 @@ class Project : AppCompatActivity() {
 
 
 
-    private inner class XmlDownloader: AsyncTask<String, Int, String>(){
+    private inner class XmlDownloader (context :Context): AsyncTask<String, Int, String>(){
 
+        private var con :Context = context
         override fun doInBackground(vararg params: String?): String { //params - full url
             try {
 
@@ -312,6 +292,9 @@ class Project : AppCompatActivity() {
                 Log.i("-----IO Exception", e.toString())
                 return "IO Exception"
             }
+
+            var myDB :DataBaseHelper = DataBaseHelper(con)
+
 
             return "success"
         }

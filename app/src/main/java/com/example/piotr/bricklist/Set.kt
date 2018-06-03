@@ -1,12 +1,28 @@
 package com.example.piotr.bricklist
 
+import android.icu.util.Output
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
+import android.view.View
 import android.widget.ListView
 
 import kotlinx.android.synthetic.main.activity_set.*
+import org.w3c.dom.Element
+import java.io.File
 import java.util.*
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.Transformer
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
+import android.Manifest
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+
 
 class Set : AppCompatActivity() {
 
@@ -60,8 +76,69 @@ class Set : AppCompatActivity() {
 
 
 
+    }
 
 
+    fun export( v: View){
+
+//        try {
+            val docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            val doc = docBuilder.newDocument()
+
+            val rootElement: Element = doc.createElement("person")
+
+            rootElement.setAttribute("person-id", "1001")
+
+            val lastName: Element = doc.createElement("last-name")
+
+            lastName.appendChild(doc.createTextNode("Doe"))
+            rootElement.appendChild(lastName)
+
+            val firstName: Element = doc.createElement("first-name")
+            firstName.appendChild(doc.createTextNode("John"))
+            rootElement.appendChild(firstName)
+            doc.appendChild(rootElement)
+
+
+
+           // requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+            makeRequestExternalStorage()
+            if (checkPermission()) {
+
+                val tranformer: Transformer = TransformerFactory.newInstance().newTransformer()
+                tranformer.setOutputProperty(OutputKeys.INDENT, "yes")
+                tranformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+                //val path =this.filesDir
+                val path = Environment.getExternalStorageDirectory()
+                val outDir = File(path, "Output")
+                outDir.mkdir()
+
+                val file = File(outDir, "text.xml")
+                Log.i("---sciezka " + file.absolutePath, "mesggasasa")
+
+                tranformer.transform(DOMSource(doc), StreamResult(file))
+
+            }
+
+
+//        }
+//            catch(e:Exception) {
+//                Log.i("---blad " + e.message, "mesggasasa")
+//            }
+
+
+
+    }
+
+    private fun makeRequestExternalStorage() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+    }
+
+    private fun checkPermission() : Boolean{
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        return true
+        }
+        else return false;
 
     }
 }
