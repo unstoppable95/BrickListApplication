@@ -22,6 +22,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import java.security.AccessController.getContext
 
 
 class Set : AppCompatActivity() {
@@ -60,11 +61,13 @@ class Set : AppCompatActivity() {
 
     }
 
+
     fun export( v: View){
 
             val docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
             val doc = docBuilder.newDocument()
             val rootElement: Element = doc.createElement("INVENTORY")
+
         makeRequestExternalStorage()
         if (checkPermission()) {
 
@@ -77,25 +80,15 @@ class Set : AppCompatActivity() {
                         val itemType = doc.createElement("ITEMTYPE")
                         itemType.appendChild(doc.createTextNode(part.itemType))
                         rootItem.appendChild(itemType)
-
-
-
                         val itemId = doc.createElement("ITEMID")
                         itemId.appendChild(doc.createTextNode(part.itemIDXML.toString()))
                         rootItem.appendChild(itemId)
-
-                        val qty = doc.createElement("QTY")
-                        qty.appendChild(doc.createTextNode((part.quantityInSet!! - part.quantityInStore).toString()))
-                        rootItem.appendChild(qty)
-
-
                         val color = doc.createElement("COLOR")
                         color.appendChild(doc.createTextNode(part.color.toString()))
                         rootItem.appendChild(color)
-
-                        val extra = doc.createElement("EXTRA")
-                        extra.appendChild(doc.createTextNode((part.extra).toString()))
-                        rootItem.appendChild(extra)
+                        val qty = doc.createElement("QTYFILLED")
+                        qty.appendChild(doc.createTextNode((part.quantityInSet!! - part.quantityInStore).toString()))
+                        rootItem.appendChild(qty)
 
                         rootElement.appendChild(rootItem)
                     }
@@ -103,8 +96,6 @@ class Set : AppCompatActivity() {
                 }
 
                 doc.appendChild(rootElement)
-
-
 
                     val tranformer: Transformer = TransformerFactory.newInstance().newTransformer()
                     tranformer.setOutputProperty(OutputKeys.INDENT, "yes")
@@ -114,7 +105,7 @@ class Set : AppCompatActivity() {
                     val outDir = File(path, "Output")
                     outDir.mkdir()
 
-                    val file = File(outDir, "text.xml")
+                    val file = File(outDir, "exportFile_"+myInventoryName+".xml")
                     Log.i("---Sciezka XML " + file.absolutePath, "XML path")
 
                     tranformer.transform(DOMSource(doc), StreamResult(file))
@@ -123,8 +114,8 @@ class Set : AppCompatActivity() {
 
     }
 
-    private fun makeRequestExternalStorage()  {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+    private fun makeRequestExternalStorage() {
+     ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
 
     }
 

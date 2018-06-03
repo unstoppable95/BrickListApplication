@@ -67,7 +67,7 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
             viewHolder.image?.setImageBitmap(y)
         }
         catch (e : Exception){
-            Log.i("---Konwersja do bitarray","error")
+           // Log.i("---Konwersja do bitarray","error")
         }
 
         //function plus brick
