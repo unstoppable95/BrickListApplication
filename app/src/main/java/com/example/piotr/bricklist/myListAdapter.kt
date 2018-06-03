@@ -104,7 +104,7 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
                 myDB.updateInStore(userDto.quantityInStore,userDto.id)
             }
 
-            if(userDto.quantityInStore!=userDto.quantityInSet){
+            if(userDto.quantityInStore<userDto.quantityInSet!!){
                 viewHolder.layout?.setBackgroundColor(TRANSPARENT)
             }
             myDB.close()

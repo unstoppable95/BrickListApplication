@@ -11,13 +11,14 @@ import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.FileOutputStream
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
 
     private var list: ArrayList<myInventory>?=null
     var inventoriesNames: ArrayList<String?> = java.util.ArrayList()
-
+    var lastAcced : ArrayList<Int> = java.util.ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,12 +26,16 @@ class MainActivity : AppCompatActivity() {
 
 
         copyDB()
+
         var myDB :DataBaseHelper = DataBaseHelper(this)
         list=myDB.getMyInventories()
 
+        lastAcced.clear()
 
         for(i in 0..list!!.size-1){
             inventoriesNames.add(list!!.get(i).name)
+            lastAcced.add(list!!.get(i).lastAccessed!!)
+
         }
 
         var adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, inventoriesNames)
@@ -52,10 +57,28 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun showList(view : View){
-        val intent = Intent(this,Set::class.java)
+    fun sortList(view : View){
+        var myDB :DataBaseHelper = DataBaseHelper(this)
 
-        startActivity(intent)
+        list=myDB.getMyInventories()
+        inventoriesNames.clear()
+        lastAcced.clear()
+
+        for(i in 0..list!!.size-1){
+            lastAcced.add(list!!.get(i).lastAccessed!!)
+
+        }
+
+        Collections.sort(lastAcced , Collections.reverseOrder())
+
+        for(i in 0..lastAcced!!.size-1){
+           inventoriesNames.add(myDB.getInventoryNameByDate(lastAcced.get(i)))
+        }
+
+        var adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, inventoriesNames)
+        listView.adapter = adapter
+
+
     }
 
     private fun copyDB() {

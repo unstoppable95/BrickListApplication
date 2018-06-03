@@ -150,6 +150,27 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
         db.close()
     }
 
+    fun updatelastAccessed(myInventoryID :Int ,date : Int){
+        val db = writableDatabase
+        val query = "UPDATE Inventories SET LastAccessed = " + date + " WHERE id = " + myInventoryID
+        db.execSQL(query)
+        db.close()
+    }
+
+    fun getInventoryNameByDate( date :Int) :String {
+        var myName =""
+        val query = "select name from Inventories where lastAccessed = " +date
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            myName=cursor.getString(0)
+        }
+        cursor.close()
+        db.close()
+        return myName
+    }
+
+
 
     fun getMyInventoriesPart(inxentoryName: String) : ArrayList<myInventoryPart> {
         val inventoriesPart : ArrayList<myInventoryPart> = java.util.ArrayList()
