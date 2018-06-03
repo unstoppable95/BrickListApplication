@@ -8,9 +8,11 @@ import kotlinx.android.synthetic.main.activity_project.*
 
 class Set : AppCompatActivity() {
 
-   private var myInventoryName:String = ""
+    private var myInventoryName:String = ""
     private var myInventoryPartList : ArrayList<myInventoryPart> ? =null
     private var myDB :DataBaseHelper = DataBaseHelper(this)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set)

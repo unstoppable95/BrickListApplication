@@ -4,14 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color.GREEN
+import android.graphics.Color.TRANSPARENT
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import java.io.ByteArrayInputStream
 
 class myListAdapter (private var activity: Activity, private var items: ArrayList<myInventoryPart> , private var context : Context) : BaseAdapter(){
@@ -19,6 +18,7 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
 
     private class ViewHolder(row: View?) {
         var desription: TextView? = null
+        var layout: RelativeLayout? = null
         var countHave: TextView? = null
         var slash: TextView? = null
         var countNeeded: TextView? = null
@@ -27,6 +27,7 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
         var image: ImageView?=null
         init {
             this.desription = row?.findViewById<TextView>(R.id.textView1)
+            this.layout = row?.findViewById<RelativeLayout>(R.id.layout)
             this.countHave = row?.findViewById<TextView>(R.id.textView2)
             this.slash = row?.findViewById<TextView>(R.id.textView3)
             this.countNeeded = row?.findViewById<TextView>(R.id.textView4)
@@ -62,6 +63,11 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
         viewHolder.countNeeded?.text=userDto.quantityInSet.toString()
         viewHolder.countHave?.text=userDto.quantityInStore.toString()
 
+        if(userDto.quantityInStore==userDto.quantityInSet){
+            viewHolder.layout?.setBackgroundColor(GREEN)
+        }
+
+
         try {
             var x: ByteArray = userDto.image!!
             var y: Bitmap = ByteArrayToBitmap(x)
@@ -71,8 +77,48 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
             Log.i("--wyjebalem sie w konwersji to bit array","xxx")
         }
 
+
+        //function plus brick
+        viewHolder.buttonPlus?.setOnClickListener(){
+            var myDB :DataBaseHelper = DataBaseHelper(context)
+            if(userDto.quantityInStore<userDto.quantityInSet!!){
+                userDto.quantityInStore+=1
+                viewHolder.countHave?.text=userDto.quantityInStore.toString()
+
+                myDB.updateInStore(userDto.quantityInStore,userDto.id)
+            }
+
+            if(userDto.quantityInStore==userDto.quantityInSet){
+                viewHolder.layout?.setBackgroundColor(GREEN)
+            }
+
+            myDB.close()
+        }
+
+        //function minus brick
+        viewHolder.buttonMinus?.setOnClickListener(){
+            var myDB :DataBaseHelper = DataBaseHelper(context)
+            if(userDto.quantityInStore>0){
+                userDto.quantityInStore-=1
+                viewHolder.countHave?.text=userDto.quantityInStore.toString()
+                myDB.updateInStore(userDto.quantityInStore,userDto.id)
+            }
+
+            if(userDto.quantityInStore!=userDto.quantityInSet){
+                viewHolder.layout?.setBackgroundColor(TRANSPARENT)
+            }
+            myDB.close()
+        }
+
+
+
+
         return view as View
     }
+
+
+
+
 
     override fun getItem(i: Int): Any {
         return items[i]

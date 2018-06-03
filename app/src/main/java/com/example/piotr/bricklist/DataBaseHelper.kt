@@ -143,6 +143,12 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
 
 
     }
+    fun updateInStore(quantityInStore :Int ,id :Int?) {
+        val db = writableDatabase
+        val query = "UPDATE InventoriesParts SET QuantityInStore = " + quantityInStore + " WHERE id = " + id
+        db.execSQL(query)
+        db.close()
+    }
 
 
     fun getMyInventoriesPart(inxentoryName: String) : ArrayList<myInventoryPart> {
