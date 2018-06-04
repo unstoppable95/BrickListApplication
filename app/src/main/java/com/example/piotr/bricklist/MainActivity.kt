@@ -26,10 +26,10 @@ class MainActivity : AppCompatActivity() {
         copyDB()
         var myDB  = DataBaseHelper(this)
         list=myDB.getMyInventories()
-        lastAcced.clear()
+       // lastAcced.clear()
         for(i in 0..list!!.size-1){
             inventoriesNames.add(list!!.get(i).name)
-            lastAcced.add(list!!.get(i).lastAccessed!!)
+          //  lastAcced.add(list!!.get(i).lastAccessed!!)
 
         }
 

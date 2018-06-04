@@ -18,18 +18,18 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
     private class ViewHolder(row: View?) {
         var desription: TextView? = null
         var layout: RelativeLayout? = null
-        var countHave: TextView? = null
-        var slash: TextView? = null
-        var countNeeded: TextView? = null
+        var Have: TextView? = null
+        //var slash: TextView? = null
+        //var countNeeded: TextView? = null
         var buttonPlus : Button?=null
         var buttonMinus : Button?=null
         var image: ImageView?=null
         init {
             this.desription = row?.findViewById<TextView>(R.id.textView1)
             this.layout = row?.findViewById<RelativeLayout>(R.id.layout)
-            this.countHave = row?.findViewById<TextView>(R.id.textView2)
-            this.slash = row?.findViewById<TextView>(R.id.textView3)
-            this.countNeeded = row?.findViewById<TextView>(R.id.textView4)
+            this.Have = row?.findViewById<TextView>(R.id.textView2)
+            //this.slash = row?.findViewById<TextView>(R.id.textView3)
+            //this.countNeeded = row?.findViewById<TextView>(R.id.textView4)
             this.buttonPlus = row?.findViewById<Button>(R.id.button1)
             this.buttonMinus = row?.findViewById<Button>(R.id.button2)
             this.image=row?.findViewById<ImageView>(R.id.imageView)
@@ -56,8 +56,9 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
 
         var userDto = items[position]
         viewHolder.desription?.text = userDto.name
-        viewHolder.countNeeded?.text=userDto.quantityInSet.toString()
-        viewHolder.countHave?.text=userDto.quantityInStore.toString()
+        //viewHolder.countNeeded?.text=userDto.quantityInSet.toString()
+        var text = userDto.quantityInStore.toString() + " / " + userDto.quantityInSet.toString()
+       viewHolder.Have?.text= text
         if(userDto.quantityInStore==userDto.quantityInSet){
             viewHolder.layout?.setBackgroundColor(GREEN)
         }
@@ -75,7 +76,8 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
             var myDB  = DataBaseHelper(context)
             if(userDto.quantityInStore<userDto.quantityInSet!!){
                 userDto.quantityInStore+=1
-                viewHolder.countHave?.text=userDto.quantityInStore.toString()
+                var text = userDto.quantityInStore.toString() + " / " + userDto.quantityInSet.toString()
+                viewHolder.Have?.text=text
 
                 myDB.updateInStore(userDto.quantityInStore,userDto.id)
             }
@@ -91,7 +93,10 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
             var myDB = DataBaseHelper(context)
             if(userDto.quantityInStore>0){
                 userDto.quantityInStore-=1
-                viewHolder.countHave?.text=userDto.quantityInStore.toString()
+
+                var text = userDto.quantityInStore.toString() + " / " + userDto.quantityInSet.toString()
+                viewHolder.Have?.text=text
+
                 myDB.updateInStore(userDto.quantityInStore,userDto.id)
             }
             if(userDto.quantityInStore<userDto.quantityInSet!!){

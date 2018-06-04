@@ -1,5 +1,6 @@
 package com.example.piotr.bricklist
 
+import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -27,33 +28,49 @@ import kotlin.collections.ArrayList
 
 class Project : AppCompatActivity() {
 
+    var progress: ProgressDialog? =null
     private var fileURL : String = "";
     private var brickSetName : String = "";
+    private var id:String =""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project)
         try {
-            urlText.setText(getIntent().getStringExtra("SetURL"));
-
+            urlText.setText(getIntent().getStringExtra("SetURL"))
+            id=getIntent().getStringExtra("id")
+            setNameText.setText(getIntent().getStringExtra("name").toString())
         }
         catch (e : Exception){}
     }
 
     fun showSettings(view: View){
         val intent = Intent(this,ProjectSettings::class.java)
+        intent.putExtra("name",setNameText.text.toString())
+        intent.putExtra("id",id)
         startActivity(intent)
     }
 
     fun downloadAdd(view: View){
         if(setNameText.text.toString().length>0 && urlText.text.toString().length>0)
         {
+            progress = ProgressDialog(this)
+            progress!!.setTitle("Please Wait!!")
+            progress!!.setMessage("Downloading XML & creating project")
+            progress!!.setCancelable(true)
+            progress!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            progress!!.show()
+
             fileURL=urlText.text.toString()
             brickSetName=setNameText.text.toString();
 
             val cd = XmlDownloader(this)
             var name:String =cd.execute(fileURL).get()
-            var myDB :DataBaseHelper = DataBaseHelper(this)
+            var myDB = DataBaseHelper(this)
+
             loadData(myDB)
+
+            progress!!.dismiss()
 
         }
         else{
@@ -62,6 +79,7 @@ class Project : AppCompatActivity() {
     }
 
     fun loadData(myDB : DataBaseHelper) {
+
         val filename = "downloadedFile.xml"
         val path = filesDir
         val inDir = File(path, "XML")
@@ -144,6 +162,7 @@ class Project : AppCompatActivity() {
                 }
             }
         }
+
 
         val intent = Intent(this,MainActivity::class.java)
 

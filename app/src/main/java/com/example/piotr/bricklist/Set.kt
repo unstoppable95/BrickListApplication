@@ -38,11 +38,11 @@ class Set : AppCompatActivity() {
         setContentView(R.layout.activity_set)
         try {
             myInventoryName= getIntent().getStringExtra ("name")
-            var myDB1 :DataBaseHelper = DataBaseHelper(this)
+            var myDB1 = DataBaseHelper(this)
 
             myInventoryID=myDB1.getMyInventoryIDIP(myInventoryName)
             textView6.setText("Inventory ID in Database : " + myInventoryID.toString())
-
+            makeRequestExternalStorage()
             val date = Date()
 
             myDB1.updatelastAccessed(myInventoryID,date.time.toInt())
@@ -68,7 +68,7 @@ class Set : AppCompatActivity() {
             val doc = docBuilder.newDocument()
             val rootElement: Element = doc.createElement("INVENTORY")
 
-        makeRequestExternalStorage()
+
         if (checkPermission()) {
 
                 var PartList = myDB.getMyInventoriesPart(myInventoryName)
