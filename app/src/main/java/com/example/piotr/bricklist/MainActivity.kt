@@ -2,6 +2,7 @@ package com.example.piotr.bricklist
 
 import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -23,18 +24,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val view = this.window.decorView
+        view.setBackgroundColor(Color.GRAY)
         copyDB()
         var myDB  = DataBaseHelper(this)
         list=myDB.getMyInventories()
-       // lastAcced.clear()
         for(i in 0..list!!.size-1){
             inventoriesNames.add(list!!.get(i).name)
-          //  lastAcced.add(list!!.get(i).lastAccessed!!)
-
         }
 
         var adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, inventoriesNames)
         listView.adapter = adapter
+
 
         listView.onItemClickListener = AdapterView.OnItemClickListener{
             adapterView, view, position, id ->

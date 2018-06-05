@@ -6,11 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_project.*
 import org.w3c.dom.Document
@@ -26,41 +28,18 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 class Project : AppCompatActivity() {
 
-    var progress: ProgressDialog? =null
+
     private var fileURL : String = "";
     private var brickSetName : String = "";
     private var id:String =""
 
-
-    fun getImage(url: String, partID:Int, colorID:Int, dbHandler: DataBaseHelper): Boolean{
-        try{
-            BufferedInputStream(URL(url).content as InputStream).use {
-                val baf = ArrayList<Byte>()
-                var current = 0
-                while(true){
-                    current = it.read()
-                    if(current == -1)
-                        break
-                    baf.add(current.toByte())
-                }
-                val blob = baf.toByteArray()
-                val blobValues = ContentValues()
-                blobValues.put("Image", blob)
-                dbHandler.updateImage(partID, colorID, blobValues)
-                return true
-            }
-        }
-        catch (e: Exception){
-            Log.i("test", e.toString())
-            return false
-        }
-
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project)
+        val view = this.window.decorView
+        view.setBackgroundColor(Color.GRAY)
+
+
         try {
             urlText.setText(getIntent().getStringExtra("SetURL"))
             id=getIntent().getStringExtra("id")
@@ -79,24 +58,12 @@ class Project : AppCompatActivity() {
     fun downloadAdd(view: View){
         if(setNameText.text.toString().length>0 && urlText.text.toString().length>0)
         {
-            progress = ProgressDialog(this)
-            progress!!.setTitle("Please Wait!!")
-            progress!!.setMessage("Downloading XML & creating project")
-            progress!!.setCancelable(true)
-            progress!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            progress!!.show()
-
             fileURL=urlText.text.toString()
             brickSetName=setNameText.text.toString();
-
             val cd = XmlDownloader(this)
             var name:String =cd.execute(fileURL).get()
             var myDB = DataBaseHelper(this)
-
             loadData(myDB)
-
-            progress!!.dismiss()
-
         }
         else{
             Toast.makeText(this, "Musisz miec nazwe zestawu i adres URL!", Toast.LENGTH_SHORT).show();
@@ -160,9 +127,6 @@ class Project : AppCompatActivity() {
                             part.id = myDB.getBrickSetPartId()
                             part.designID = myDB.getDesignId(part.colorID,part.itemIDDatabase)
 
-
-
-
                             if ( myDB.imageExists(part.designID)==0){
                                 var adress=""
 
@@ -200,19 +164,15 @@ class Project : AppCompatActivity() {
 
         startActivity(intent)
 
-
-
     }
 
 
 
     private inner  class RetrieveFeedTask(partID: Int,colorID : Int, myDB: DataBaseHelper) : AsyncTask<String, Int, Boolean>() {
 
-
         private var colorIDx=colorID
         private var partID=partID
         private var myDabase=myDB
-
         private var exception: Exception? = null
 
         override fun doInBackground (vararg params: String?): Boolean {
@@ -261,7 +221,6 @@ class Project : AppCompatActivity() {
     }
 
 
-
     private inner class XmlDownloader (context :Context): AsyncTask<String, Int, String>(){
 
         private var con :Context = context
@@ -269,7 +228,6 @@ class Project : AppCompatActivity() {
             try {
 
                 var filename = "downloadedFile.xml";
-
                 val url = URL(params[0])
                 val connection = url.openConnection()
                 connection.connect()

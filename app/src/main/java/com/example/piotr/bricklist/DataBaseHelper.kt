@@ -22,9 +22,6 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
         db.close()
     }
 
-
-
-
     fun addInventoryToDatabase(inventory: myInventory){
         val values = ContentValues()
         values.put("id", inventory.id)
@@ -35,7 +32,6 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
         db.insert("Inventories",null,values)
         db.close()
     }
-
 
     fun getBricSetId():Int{
         var brickSetId : Int =0;
@@ -373,8 +369,6 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
         db.close()
 
     }
-
-
 
 
     /**

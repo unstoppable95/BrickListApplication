@@ -1,6 +1,7 @@
 package com.example.piotr.bricklist
 
 import android.content.Intent
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,8 @@ class ProjectSettings : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_project_settings)
+        val view = this.window.decorView
+        view.setBackgroundColor(Color.GRAY)
 
         try {
             name = getIntent().getStringExtra("name").toString()

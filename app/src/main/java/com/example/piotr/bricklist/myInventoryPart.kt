@@ -17,13 +17,4 @@ class myInventoryPart {
     var name:String? = null
     var colorName :String?=null
 
-
-    override fun toString(): String {
-        return id.toString() + " "+ inventoryID.toString()+ " " + itemType + " "+ typeID.toString()+ " "+
-                itemIDXML+ " " + color.toString() + " "+ colorID.toString()+ " " +
-                quantityInSet.toString()+ " " + quantityInStore.toString() + " "+
-                extra + " "+ name + " "+ itemIDDatabase.toString() + " " + designID.toString()
-    }
-
-
 }

@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color.GREEN
-import android.graphics.Color.TRANSPARENT
+import android.graphics.Color
+import android.graphics.Color.*
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,16 +19,18 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
         var desription: TextView? = null
         var layout: RelativeLayout? = null
         var Have: TextView? = null
+        var Color: TextView? = null
         var buttonPlus : Button?=null
         var buttonMinus : Button?=null
         var image: ImageView?=null
         init {
             this.desription = row?.findViewById<TextView>(R.id.textView1)
-            this.layout = row?.findViewById<RelativeLayout>(R.id.layout)
             this.Have = row?.findViewById<TextView>(R.id.textView2)
             this.buttonPlus = row?.findViewById<Button>(R.id.button1)
             this.buttonMinus = row?.findViewById<Button>(R.id.button2)
             this.image=row?.findViewById<ImageView>(R.id.imageView)
+            this.Color=row?.findViewById<TextView>(R.id.textView8)
+            this.layout = row?.findViewById<RelativeLayout>(R.id.layout)
         }
     }
 
@@ -50,9 +52,10 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
             viewHolder = view.tag as ViewHolder
         }
 
+        viewHolder.layout!!.setBackgroundColor(Color.parseColor("#21718f"))
         var userDto = items[position]
-        var text1=userDto.colorName + " : " +userDto.name
-        viewHolder.desription?.text = text1
+        viewHolder.Color?.text =userDto.colorName
+        viewHolder.desription?.text =userDto.name
         var text = userDto.quantityInStore.toString() + " / " + userDto.quantityInSet.toString()
        viewHolder.Have?.text= text
         if(userDto.quantityInStore==userDto.quantityInSet){
@@ -67,7 +70,6 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
            // Log.i("---Konwersja do bitarray","error")
         }
 
-        //function plus brick
         viewHolder.buttonPlus?.setOnClickListener(){
             var myDB  = DataBaseHelper(context)
             if(userDto.quantityInStore<userDto.quantityInSet!!){
@@ -84,7 +86,6 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
             myDB.close()
         }
 
-        //function minus brick
         viewHolder.buttonMinus?.setOnClickListener(){
             var myDB = DataBaseHelper(context)
             if(userDto.quantityInStore>0){
@@ -96,7 +97,7 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
                 myDB.updateInStore(userDto.quantityInStore,userDto.id)
             }
             if(userDto.quantityInStore<userDto.quantityInSet!!){
-                viewHolder.layout?.setBackgroundColor(TRANSPARENT)
+                viewHolder.layout?.setBackgroundColor(Color.parseColor("#21718f"))
             }
             myDB.close()
         }

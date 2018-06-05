@@ -20,6 +20,7 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import java.security.AccessController.getContext
@@ -32,10 +33,11 @@ class Set : AppCompatActivity() {
     private var myDB :DataBaseHelper = DataBaseHelper(this)
     private var myInventoryID : Int=0
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set)
+        val view = this.window.decorView
+        view.setBackgroundColor(Color.GRAY)
         try {
             myInventoryName= getIntent().getStringExtra ("name")
             var myDB1 = DataBaseHelper(this)
