@@ -19,8 +19,6 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
         var desription: TextView? = null
         var layout: RelativeLayout? = null
         var Have: TextView? = null
-        //var slash: TextView? = null
-        //var countNeeded: TextView? = null
         var buttonPlus : Button?=null
         var buttonMinus : Button?=null
         var image: ImageView?=null
@@ -28,8 +26,6 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
             this.desription = row?.findViewById<TextView>(R.id.textView1)
             this.layout = row?.findViewById<RelativeLayout>(R.id.layout)
             this.Have = row?.findViewById<TextView>(R.id.textView2)
-            //this.slash = row?.findViewById<TextView>(R.id.textView3)
-            //this.countNeeded = row?.findViewById<TextView>(R.id.textView4)
             this.buttonPlus = row?.findViewById<Button>(R.id.button1)
             this.buttonMinus = row?.findViewById<Button>(R.id.button2)
             this.image=row?.findViewById<ImageView>(R.id.imageView)
@@ -55,8 +51,8 @@ class myListAdapter (private var activity: Activity, private var items: ArrayLis
         }
 
         var userDto = items[position]
-        viewHolder.desription?.text = userDto.name
-        //viewHolder.countNeeded?.text=userDto.quantityInSet.toString()
+        var text1=userDto.colorName + " : " +userDto.name
+        viewHolder.desription?.text = text1
         var text = userDto.quantityInStore.toString() + " / " + userDto.quantityInSet.toString()
        viewHolder.Have?.text= text
         if(userDto.quantityInStore==userDto.quantityInSet){

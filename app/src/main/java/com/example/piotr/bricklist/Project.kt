@@ -4,7 +4,6 @@ import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.database.SQLException
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
@@ -24,7 +23,6 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
-import kotlin.collections.ArrayList
 
 class Project : AppCompatActivity() {
 
@@ -32,6 +30,33 @@ class Project : AppCompatActivity() {
     private var fileURL : String = "";
     private var brickSetName : String = "";
     private var id:String =""
+
+
+    fun getImage(url: String, partID:Int, colorID:Int, dbHandler: DataBaseHelper): Boolean{
+        try{
+            BufferedInputStream(URL(url).content as InputStream).use {
+                val baf = ArrayList<Byte>()
+                var current = 0
+                while(true){
+                    current = it.read()
+                    if(current == -1)
+                        break
+                    baf.add(current.toByte())
+                }
+                val blob = baf.toByteArray()
+                val blobValues = ContentValues()
+                blobValues.put("Image", blob)
+                dbHandler.updateImage(partID, colorID, blobValues)
+                return true
+            }
+        }
+        catch (e: Exception){
+            Log.i("test", e.toString())
+            return false
+        }
+
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,23 +161,30 @@ class Project : AppCompatActivity() {
                             part.designID = myDB.getDesignId(part.colorID,part.itemIDDatabase)
 
 
+
+
                             if ( myDB.imageExists(part.designID)==0){
                                 var adress=""
 
                                 if(part.designID!!>0) {
                                     val cp = RetrieveFeedTask(part.itemIDDatabase!!, part.colorID!!, myDB)
                                     adress="https://www.lego.com/service/bricks/5/2/"+part.designID
+
                                     if(!cp.execute(adress).get()){
-                                        adress="https://www.bricklink.com/PL/" + part.designID + ".jpg"
+                                        adress="http://img.bricklink.com/P/" + part.color + "/" + part.itemIDXML + ".gif"
+
                                         if(!cp.execute(adress).get()){
-                                            adress= "http://img.bricklink.com/P/" + part.colorID + "/" + part.itemIDDatabase + ".gif"
+                                            adress= "https://www.bricklink.com/PL/" + part.itemIDXML + ".jpg"
                                             cp.execute(adress)
                                         }
                                     }
 
                                 }
 
+
                             }
+
+
 
                             myDB.addInventoryPartToDatabase(part);
 
@@ -167,6 +199,8 @@ class Project : AppCompatActivity() {
         val intent = Intent(this,MainActivity::class.java)
 
         startActivity(intent)
+
+
 
     }
 

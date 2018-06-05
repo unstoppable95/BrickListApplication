@@ -15,6 +15,8 @@ class myInventoryPart {
     var image:ByteArray ?= null
     var extra:String? = null
     var name:String? = null
+    var colorName :String?=null
+
 
     override fun toString(): String {
         return id.toString() + " "+ inventoryID.toString()+ " " + itemType + " "+ typeID.toString()+ " "+

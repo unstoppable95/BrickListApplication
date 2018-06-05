@@ -15,13 +15,14 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
 
     private var myDataBase: SQLiteDatabase? = null
 
-
     fun updateImage(partID:Int, colorID:Int, image:ContentValues){
         val db = writableDatabase
         val selection = "ColorID = " + colorID + " and ItemID = " + partID
         db.update("CODES", image, selection, null)
         db.close()
     }
+
+
 
 
     fun addInventoryToDatabase(inventory: myInventory){
@@ -184,7 +185,19 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
         return myName
     }
 
+    fun getColorName(idCol :Int?):String{
 
+        var color =""
+        val query = "select name from Colors where id = " +idCol
+        val db = this.writableDatabase
+        val cursor = db.rawQuery(query,null)
+        if(cursor.moveToFirst()){
+            color=cursor.getString(0)
+        }
+        cursor.close()
+        db.close()
+        return color
+    }
 
     fun getMyInventoriesPart(inxentoryName: String) : ArrayList<myInventoryPart> {
         val inventoriesPart : ArrayList<myInventoryPart> = java.util.ArrayList()
@@ -205,14 +218,13 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
             inventoryPart.quantityInStore = Integer.parseInt(cursor.getString(5))
             inventoryPart.colorID = Integer.parseInt(cursor.getString(6))
             inventoryPart.extra = cursor.getString(7)
-
             inventoryPart.itemType = getItemTypeIP(inventoryPart.typeID)
             inventoryPart.color =getColorIP(inventoryPart.colorID!!)
             inventoryPart.name = getNameIP(inventoryPart.itemIDDatabase)
             inventoryPart.itemIDXML=getItemIDIP(inventoryPart.itemIDDatabase)
             inventoryPart.designID = getDesignId(inventoryPart.colorID,inventoryPart.itemIDDatabase)
             inventoryPart.image=getImageIP( inventoryPart.designID )
-
+            inventoryPart.colorName=getColorName(inventoryPart.colorID)
             inventoriesPart.add(inventoryPart)
         }
         while(cursor.moveToNext()){
@@ -225,13 +237,13 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
             inventoryPart.quantityInStore = Integer.parseInt(cursor.getString(5))
             inventoryPart.colorID = Integer.parseInt(cursor.getString(6))
             inventoryPart.extra = cursor.getString(7)
-
             inventoryPart.itemType = getItemTypeIP(inventoryPart.typeID)
             inventoryPart.color =getColorIP(inventoryPart.colorID)
             inventoryPart.name = getNameIP(inventoryPart.itemIDDatabase!!)
             inventoryPart.itemIDXML=getItemIDIP(inventoryPart.itemIDDatabase)
             inventoryPart.designID = getDesignId(inventoryPart.colorID,inventoryPart.itemIDDatabase)
             inventoryPart.image=getImageIP( inventoryPart.designID )
+            inventoryPart.colorName=getColorName(inventoryPart.colorID)
             inventoriesPart.add(inventoryPart)
         }
         cursor.close()
@@ -299,7 +311,7 @@ class DataBaseHelper (private val myContext: Context) : SQLiteOpenHelper(myConte
 
     fun getColorID(color :Int?):Int{
         var colorID : Int=0
-        val query = "select id from Colors where code = " +color
+        val query = "select id from Colors where code = '" + color + "'"
         val db = this.writableDatabase
         val cursor = db.rawQuery(query,null)
         if(cursor.moveToFirst()){
